@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NPTEL Foundations of Cryptography — Week-by-Week Study Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --surface2: #181c24;
+    --border: #252a34;
+    --accent: #00e5ff;
+    --accent2: #ff6b35;
+    --accent3: #a259ff;
+    --text: #e8eaf0;
+    --text-dim: #8892a4;
+    --success: #00c853;
+    --warning: #ffab00;
+    --mono: 'JetBrains Mono', monospace;
+    --serif: 'Libre Baskerville', serif;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Header */
+  .hero {
+    background: linear-gradient(135deg, #0a0c10 0%, #0d1a2a 40%, #100a1a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 24px 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(0,229,255,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: rgba(0,229,255,0.1);
+    border: 1px solid rgba(0,229,255,0.3);
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 16px;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(24px, 4vw, 42px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero p {
+    color: var(--text-dim);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* Stats bar */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    padding: 0 24px;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-val {
+    font-family: var(--mono);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* Layout */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+
+  /* Progress tracker */
+  .progress-bar-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .progress-label { font-size: 13px; color: var(--text-dim); white-space: nowrap; }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .progress-pct {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+
+  /* Week navigation */
+  .week-nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+  .week-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .week-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .week-btn.active {
+    background: rgba(0,229,255,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .week-btn.done {
+    border-color: var(--success);
+    color: var(--success);
+  }
+
+  /* Week card */
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .week-card.active { border-color: rgba(0,229,255,0.3); }
+
+  .week-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .week-header:hover { background: rgba(255,255,255,0.02); }
+
+  .week-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.2);
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .week-title { font-weight: 600; font-size: 15px; flex: 1; }
+  .week-subtitle { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+  .week-chevron {
+    color: var(--text-dim);
+    font-size: 18px;
+    transition: transform 0.3s;
+  }
+  .week-card.open .week-chevron { transform: rotate(180deg); }
+
+  .week-body {
+    display: none;
+    padding: 0 20px 24px;
+    border-top: 1px solid var(--border);
+  }
+  .week-card.open .week-body { display: block; }
+
+  /* Tags */
+  .topic-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 14px 0 18px;
+  }
+  .tag {
+    font-size: 11px;
+    font-family: var(--mono);
+    padding: 3px 9px;
+    border-radius: 3px;
+    border: 1px solid;
+  }
+  .tag-blue { color: #64b5f6; border-color: rgba(100,181,246,0.3); background: rgba(100,181,246,0.06); }
+  .tag-orange { color: #ffb74d; border-color: rgba(255,183,77,0.3); background: rgba(255,183,77,0.06); }
+  .tag-purple { color: #ce93d8; border-color: rgba(206,147,216,0.3); background: rgba(206,147,216,0.06); }
+  .tag-green { color: #81c784; border-color: rgba(129,199,132,0.3); background: rgba(129,199,132,0.06); }
+
+  /* Section headers */
+  .section-hdr {
+    font-size: 11px;
+    font-family: var(--mono);
+    letter-spacing: 2px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin: 18px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-hdr::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Concept boxes */
+  .concepts { display: flex; flex-direction: column; gap: 8px; }
+  .concept {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 0 6px 6px 0;
+  }
+  .concept-name {
+    font-weight: 600;
+    font-size: 13px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .concept-desc {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* Mnemonics */
+  .mnemonic-box {
+    background: rgba(162,89,255,0.07);
+    border: 1px solid rgba(162,89,255,0.25);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin-top: 4px;
+  }
+  .mnemonic-title {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--accent3);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .mnemonic-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .mnemonic-text strong { color: var(--accent3); }
+
+  /* Q&A */
+  .qa-list { display: flex; flex-direction: column; gap: 10px; }
+  .qa-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .qa-q {
+    padding: 12px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: background 0.2s;
+  }
+  .qa-q:hover { background: rgba(255,255,255,0.02); }
+  .qa-q-icon {
+    background: rgba(255,107,53,0.15);
+    color: var(--accent2);
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 2px;
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+  .qa-a {
+    display: none;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    border-top: 1px solid var(--border);
+    background: rgba(0,229,255,0.02);
+  }
+  .qa-a.show { display: block; }
+  .qa-a strong { color: var(--accent); }
+
+  /* Key formulas */
+  .formula-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+  }
+  .formula-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .formula-name {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .formula-expr {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--success);
+  }
+
+  /* Exam tips */
+  .tips-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .tips-list li {
+    font-size: 13px;
+    color: var(--text-dim);
+    padding-left: 20px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .tips-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--warning);
+  }
+  .tips-list li strong { color: var(--text); }
+
+  /* Done button */
+  .mark-done-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 16px;
+  }
+  .mark-done-btn:hover { border-color: var(--success); color: var(--success); }
+  .mark-done-btn.done { border-color: var(--success); color: var(--success); background: rgba(0,200,83,0.06); }
+
+  /* Quick reference panel */
+  .quick-ref {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 28px;
+  }
+  .quick-ref-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 16px;
+    color: var(--accent);
+  }
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .ref-item {
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .ref-item-week { color: var(--text-dim); margin-bottom: 3px; font-family: var(--mono); font-size: 10px; }
+  .ref-item-name { color: var(--text); font-weight: 500; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 12px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">NPTEL Study Guide</div>
+  <h1>Foundations of <span>Cryptography</span></h1>
+  <p>Prof. Ashish Choudhury · IIIT-Bengaluru · 12 Weeks · 59 Lectures</p>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">12</div><div class="stat-label">Weeks</div></div>
+    <div class="stat"><div class="stat-val">59</div><div class="stat-label">Lectures</div></div>
+    <div class="stat"><div class="stat-val">2</div><div class="stat-label">Parts</div></div>
+    <div class="stat"><div class="stat-val">108+</div><div class="stat-label">Exam Q&amp;As</div></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="progress-bar-wrap">
+    <span class="progress-label">Study Progress</span>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <span class="progress-pct" id="progressPct">0 / 12</span>
+  </div>
+
+  <div class="week-nav" id="weekNav"></div>
+
+  <div class="quick-ref">
+    <div class="quick-ref-title">🗺️ Course Roadmap at a Glance</div>
+    <div class="ref-grid">
+      <div class="ref-item"><div class="ref-item-week">WEEK 1</div><div class="ref-item-name">Intro + Symmetric Encryption + Historical Ciphers + Perfect Security</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 2</div><div class="ref-item-name">Computational Security + Semantic Security + PRGs</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 3</div><div class="ref-item-name">Stream Ciphers + Provably-secure PRGs + CPA Security + PRFs</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 4</div><div class="ref-item-name">CPA-secure Encryption from PRF + Block Cipher Modes + DES/AES Theory</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 5</div><div class="ref-item-name">Practical Block Ciphers + Active Adversary + MACs</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 6</div><div class="ref-item-name">IT-MACs + Hash Functions + HMAC</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 7</div><div class="ref-item-name">Birthday Attacks + Random Oracle + Authenticated Encryption</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 8</div><div class="ref-item-name">CCA Security + Key Exchange + Cyclic Groups</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 9</div><div class="ref-item-name">DLog Assumptions + Elliptic Curves + Public-Key Encryption</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 10</div><div class="ref-item-name">ElGamal + RSA Assumption + RSA Cryptosystem + Hybrid PKE</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 11</div><div class="ref-item-name">CCA-Secure PKE + Digital Signatures + RSA Signatures</div></div>
+      <div class="ref-item"><div class="ref-item-week">WEEK 12</div><div class="ref-item-name">Schnorr Signatures + TLS/SSL + Secret Sharing + Zero-Knowledge</div></div>
+    </div>
+  </div>
+
+  <!-- WEEK CARDS -->
+  <div id="weekCards"></div>
+
+</div>
+
+<footer>Built from NPTEL Foundations of Cryptography lecture notes · Prof. Ashish Choudhury · IIIT-B</footer>
+
+<script>
+const weeks = [
+  {
+    num: "W01",
+    title: "Introduction, Symmetric Encryption & Perfect Security",
+    subtitle: "Lectures 1–5 · Pages 1–107",
+    tags: [
+      {text:"Cryptography Basics", cls:"tag-blue"},
+      {text:"Symmetric Key", cls:"tag-orange"},
+      {text:"Caesar Cipher", cls:"tag-purple"},
+      {text:"One-Time Pad", cls:"tag-green"},
+      {text:"Perfect Security", cls:"tag-blue"},
+    ],
+    concepts: [
+      {name:"What is Cryptography?", desc:"The science of keeping data secure from untrusted entities. Converts a public open channel into a virtual secure channel providing Privacy, Authenticity, and Integrity."},
+      {name:"3-Stage Process (Modern Crypto Methodology)", desc:"(1) Precise formal security definition → (2) Algorithmic construction → (3) Rigorous mathematical proof. Like: design a house blueprint → build it → verify it matches the blueprint."},
+      {name:"Symmetric-Key Encryption (SKE)", desc:"Same key k is used by both sender and receiver. Also called Private-Key Cryptography. Efficient but requires key agreement beforehand. Syntax: (KeyGen, Enc, Dec)."},
+      {name:"Kerckhoffs' Principle", desc:"Security must reside only in the key. The algorithm/scheme can be publicly known. 'The enemy knows the system.' Only the key should be secret."},
+      {name:"Historical Ciphers", desc:"Caesar Cipher: shift each letter by k positions (broken by frequency analysis). Vigenère: polyalphabetic substitution (broken by index of coincidence). These fail because the algorithm itself provides security."},
+      {name:"One-Time Pad (OTP)", desc:"Message m ∈ {0,1}^L, Key k ∈ {0,1}^L chosen uniformly at random. Ciphertext: c = m ⊕ k. Decryption: m = c ⊕ k. Provides PERFECT SECURITY but key must be as long as message and used only once."},
+      {name:"Perfect Security (Shannon)", desc:"An encryption scheme has perfect secrecy if Pr[M=m | C=c] = Pr[M=m] for all m, c. The ciphertext reveals ZERO information about the plaintext — even to an adversary with unlimited computation."},
+      {name:"Limitations of Perfect Security", desc:"Theorem (Shannon): In any perfectly secure scheme, |K| ≥ |M|. The key must be at least as long as the message. Key reuse is forbidden. These make perfect secrecy impractical."},
+    ],
+    mnemonic: "Remember OTP: <strong>XOR with a Random Key = Perfection</strong>. But it costs: key as long as message, single use only. Think of it as a 'perfect but expensive insurance policy.'",
+    formulas: [
+      {name:"OTP Encryption", expr:"c = m ⊕ k"},
+      {name:"OTP Decryption", expr:"m = c ⊕ k"},
+      {name:"Perfect Secrecy Condition", expr:"Pr[M=m|C=c] = Pr[M=m]"},
+      {name:"Shannon's Theorem", expr:"|K| ≥ |M|"},
+      {name:"Caesar Cipher", expr:"c = (m + k) mod 26"},
+    ],
+    qa: [
+      {q:"What are the 3 goals of a secure communication channel?", a:"<strong>Privacy</strong> (only sender/receiver know the content), <strong>Authenticity</strong> (message truly came from the claimed sender), and <strong>Integrity</strong> (message was not tampered en-route)."},
+      {q:"What is Kerckhoffs' Principle and why does it matter?", a:"Security must reside only in the key — the algorithm can be public. It matters because: (1) public algorithms undergo more scrutiny and are more trusted; (2) if the algorithm is compromised you only need to change keys, not the whole system."},
+      {q:"Why does the One-Time Pad provide perfect security?", a:"Because c = m ⊕ k where k is uniformly random and as long as m. For any ciphertext c, every possible plaintext m is equally likely (there is exactly one key k = m ⊕ c for each m). So seeing c gives the adversary zero extra information."},
+      {q:"What is the major limitation of perfect security (Shannon's theorem)?", a:"In any perfectly secure scheme, the key space must be at least as large as the message space (|K| ≥ |M|). This means keys must be as long as messages and cannot be reused — highly impractical."},
+      {q:"How is the Caesar cipher broken?", a:"By <strong>frequency analysis</strong>: the most frequent letter in English is 'E'. If you find the most frequent ciphertext letter, you can guess the shift. It's a simple brute-force over 26 possible keys."},
+      {q:"What are the 2 parts of this course?", a:"<strong>Part 1</strong> (Weeks 1–8): Symmetric-key cryptography — perfect security, PRGs, stream ciphers, PRFs, block ciphers, MACs, hash functions, authenticated encryption. <strong>Part 2</strong> (Weeks 9–12): Asymmetric cryptography — Diffie-Hellman, ElGamal, RSA, digital signatures."},
+      {q:"What is the difference between Authenticity and Integrity?", a:"<strong>Authenticity</strong>: verifying WHO sent the message (the source). <strong>Integrity</strong>: verifying the message CONTENT was not changed en-route. Both are separate from Privacy/Secrecy."},
+      {q:"Name 3 advanced applications of cryptography beyond secure communication.", a:"(1) <strong>Cryptocurrency</strong> (double-spending prevention + anonymity), (2) <strong>Zero-Knowledge Proofs</strong> (prove you know something without revealing it), (3) <strong>Secure Multi-Party Computation</strong> (compute on private data without revealing inputs), (4) <strong>Homomorphic Encryption</strong> (compute on encrypted data)."},
+    ],
+    tips: [
+      "OTP = perfect but impractical. Know WHY: key size = message size, no reuse.",
+      "Kerckhoffs' Principle is always asked. Memorize: 'security = key, not algorithm'.",
+      "Know all 3 properties of a secure channel: Privacy, Authenticity, Integrity.",
+      "Shannon's theorem proof direction: perfect secrecy ⟹ |K| ≥ |M|.",
+    ]
+  },
+  {
+    num: "W02",
+    title: "Computational Security & Pseudo-Random Generators",
+    subtitle: "Lectures 6–9 · Pages 109–181",
+    tags: [
+      {text:"Computational Security", cls:"tag-blue"},
+      {text:"Semantic Security", cls:"tag-orange"},
+      {text:"PRG", cls:"tag-purple"},
+      {text:"Negligible Functions", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"Why Computational Security?", desc:"Perfect secrecy is impractical (|K|≥|M|, no key reuse). Modern cryptography relaxes two assumptions: (1) Adversary is computationally bounded (poly-time), (2) Allow negligible probability of failure. This enables short keys for long messages."},
+      {name:"Efficient Algorithms", desc:"An algorithm is efficient if its running time is polynomial in the security parameter n. A PPT (Probabilistic Polynomial Time) adversary is the standard model of a computationally bounded attacker."},
+      {name:"Negligible Functions", desc:"A function negl(n) is negligible if for every polynomial p(·), for all sufficiently large n: negl(n) < 1/p(n). Intuitively: negligible means astronomically small — the probability of breaking the scheme is essentially zero in practice."},
+      {name:"Semantic Security (IND-EAV)", desc:"Formal definition of computational secrecy in the eavesdropping model. An adversary picks m₀, m₁; gets Enc(mᵦ) for random b; tries to guess b. Scheme is secure if advantage ≤ negl(n). Also called Indistinguishability under Chosen Plaintext Attack (IND-CPA) in a single-message form."},
+      {name:"Pseudo-Random Generator (PRG)", desc:"A deterministic algorithm G: {0,1}^ℓ → {0,1}^L where L > ℓ (expansion). Security: no PPT algorithm can distinguish G(s) (for uniform s) from a uniform L-bit string. This is the hardness assumption underlying stream ciphers."},
+      {name:"PRG Security Experiment", desc:"Challenger picks b∈{0,1}. If b=0, sends G(s) for uniform s. If b=1, sends uniform r of length L. Distinguisher D outputs b'. Advantage = |Pr[D outputs 1 when b=0] - Pr[D outputs 1 when b=1]|. PRG is secure if advantage ≤ negl(n)."},
+    ],
+    mnemonic: "Think of PRG as a <strong>seed-stretching machine</strong>: plant a small seed (short key), grow a long random-looking garden (keystream). The security guarantee: no computer can tell your 'fake garden' from a truly random one.",
+    formulas: [
+      {name:"PRG expansion condition", expr:"L > ℓ (L = poly(n), ℓ = poly(n))"},
+      {name:"Negligible function", expr:"negl(n) < 1/p(n) for all poly p, large n"},
+      {name:"Semantic security advantage", expr:"Adv ≤ negl(n)"},
+      {name:"PRG-based encryption", expr:"c = m ⊕ G(s)"},
+    ],
+    qa: [
+      {q:"What are the 2 key relaxations made by computational security over perfect security?", a:"(1) <strong>Adversary is computationally bounded</strong> (PPT, not unbounded). (2) <strong>Negligible failure probability</strong> is acceptable (not literally zero). These relaxations allow short keys and key reuse."},
+      {q:"Define a Pseudo-Random Generator (PRG). What are its 3 requirements?", a:"G: {0,1}^ℓ → {0,1}^L is a PRG if: (1) <strong>Efficiency</strong>: runs in polynomial time; (2) <strong>Expansion</strong>: L > ℓ; (3) <strong>Pseudorandomness</strong>: no PPT distinguisher can tell G(s) from a truly uniform string of length L."},
+      {q:"What is a negligible function? Give an intuitive example.", a:"A function f(n) is negligible if it shrinks faster than any inverse polynomial — e.g., 2^(-n), n^(-log n). Example: 2^(-128) is negligible for n=128, meaning the probability of breaking AES-128 by luck is negligibly small."},
+      {q:"What is semantic security (IND-EAV)? Explain the experiment.", a:"Adversary picks m₀ and m₁ of equal length. Challenger encrypts one (chosen randomly) and gives ciphertext c* to adversary. Adversary guesses which message was encrypted. If the probability of guessing correctly is not significantly more than 1/2 (= 1/2 + negl), the scheme is semantically secure."},
+      {q:"Why can't a PRG have expansion factor 0? (i.e., why must L > ℓ?)", a:"If L = ℓ, G is just a permutation or mapping between equal-size sets — it provides no key stretching and offers no advantage over OTP. Expansion (L > ℓ) is what allows encrypting long messages with a short key."},
+      {q:"What is the difference between a deterministic and randomized encryption scheme?", a:"<strong>Deterministic</strong>: same plaintext always encrypts to same ciphertext — insecure (adversary can detect repeated messages). <strong>Randomized</strong>: uses fresh randomness each time — same plaintext gives different ciphertexts. CPA-secure schemes must be randomized."},
+    ],
+    tips: [
+      "Negligible = shrinks faster than any polynomial. Contrast with non-negligible.",
+      "PRG security = computational indistinguishability from truly random.",
+      "Semantic security and IND-CPA are equivalent — know the formal game.",
+      "A secure PRG ⟹ a secure stream cipher (via reduction argument).",
+    ]
+  },
+  {
+    num: "W03",
+    title: "Stream Ciphers, PRG Constructions & CPA Security",
+    subtitle: "Lectures 10–14 · Pages 182–274",
+    tags: [
+      {text:"Stream Ciphers", cls:"tag-blue"},
+      {text:"RC4 / Trivium", cls:"tag-orange"},
+      {text:"CPA Security", cls:"tag-purple"},
+      {text:"PRF", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"Stream Cipher", desc:"A 'pseudo one-time pad'. Key k ∈ {0,1}^ℓ (short). To encrypt m ∈ {0,1}^L: c = m ⊕ G(k). PRG G stretches k into a long keystream. Called 'stream' because bits can be encrypted in a stream (not all at once)."},
+      {name:"Security of Stream Cipher", desc:"If G is a secure PRG, then the stream cipher is semantically secure (IND-EAV). Proof by reduction: if adversary breaks stream cipher, we can use it to distinguish G from random, contradicting PRG security."},
+      {name:"Multi-Message Security & Key Reuse", desc:"Stream cipher CANNOT safely reuse the same key. If c₁ = m₁ ⊕ G(k) and c₂ = m₂ ⊕ G(k), then c₁ ⊕ c₂ = m₁ ⊕ m₂ leaking info. A different IV/nonce is needed for each message."},
+      {name:"Provably Secure PRG (Blum-Micali, BBS)", desc:"Based on hardness assumptions (discrete log, quadratic residuosity). Blum-Blum-Shub: xᵢ₊₁ = xᵢ² mod N; output bit = xᵢ mod 2. Security reduces to factoring N (hard)."},
+      {name:"Practical PRGs (RC4, Trivium)", desc:"RC4: widely used stream cipher (WEP, SSL), but has known weaknesses. Trivium: designed for hardware, uses 3 shift registers, 80-bit key. No security proof — just empirically resistant to attacks."},
+      {name:"CPA Security (IND-CPA)", desc:"Chosen Plaintext Attack security. Adversary can adaptively query encryption of chosen messages (encryption oracle), then try to distinguish ciphertexts. Stronger than IND-EAV. Any CPA-secure scheme MUST be randomized (because same message → different ciphertexts needed)."},
+      {name:"Pseudo-Random Function (PRF)", desc:"F: {0,1}^n × {0,1}^n → {0,1}^n. Keyed function. Security: no PPT adversary can distinguish Fₖ (for unknown k) from a truly random function. Key tool for building CPA-secure encryption and MACs."},
+    ],
+    mnemonic: "<strong>Stream cipher = PRG keystream XOR plaintext</strong>. Remember its fatal flaw with the rhyme: <strong>'Same key twice? That's not nice — XOR the two ciphers and pay the price.'</strong> (c₁⊕c₂ = m₁⊕m₂)",
+    formulas: [
+      {name:"Stream cipher enc", expr:"c = m ⊕ G(k)"},
+      {name:"Stream cipher dec", expr:"m = c ⊕ G(k)"},
+      {name:"Key reuse leak", expr:"c₁ ⊕ c₂ = m₁ ⊕ m₂"},
+      {name:"BBS PRG", expr:"xᵢ₊₁ = xᵢ² mod N"},
+      {name:"PRF security", expr:"Adv_PRF ≤ negl(n)"},
+    ],
+    qa: [
+      {q:"What is a stream cipher? How does it differ from OTP?", a:"Stream cipher uses a PRG to stretch a short key into a long keystream: c = m ⊕ G(k). OTP uses a truly random key of the same length as the message. In stream cipher the key is short but the PRG is deterministic — so the 'randomness' is pseudo-random, not truly random."},
+      {q:"Why must keys never be reused in a stream cipher?", a:"If k is reused for m₁ and m₂: c₁⊕c₂ = m₁⊕m₂. The XOR of two ciphertexts equals the XOR of two plaintexts — leaking significant information (known as the 'two-time pad' attack). This is how German Lorenz messages were broken in WWII."},
+      {q:"What is CPA security and why must CPA-secure schemes be randomized?", a:"CPA (Chosen Plaintext Attack) security: adversary has oracle access to Enc before and after seeing challenge ciphertext. Must be randomized: if deterministic, adversary queries Enc(m₀) before challenge and compares to c* — immediately winning if c*=Enc(m₀)."},
+      {q:"What is a PRF? How does it differ from a PRG?", a:"<strong>PRG</strong>: stretches a short seed to a long output (one-directional). <strong>PRF</strong>: Fₖ is a keyed function with a specific input-output pair — appears random for each input when k is unknown. PRFs are more flexible: support multiple queries. PRF is a building block for CPA-secure encryption, MACs."},
+      {q:"State the Blum-Blum-Shub PRG and its security basis.", a:"x₀ = seed (random), xᵢ₊₁ = xᵢ² mod N where N=p·q (product of safe primes). Output bit i = xᵢ mod 2 (or LSB). Security: if Quadratic Residuosity assumption holds (hard to distinguish QRs from non-QRs mod N), BBS is a secure PRG."},
+      {q:"Why is RC4 considered insecure?", a:"RC4 has known biases in the first few output bytes (the keystream is not uniformly random early on). It's also vulnerable to related-key attacks. Particularly problematic in WEP (Wi-Fi) where the IV and key were concatenated insecurely."},
+    ],
+    tips: [
+      "Stream cipher security reduces to PRG security — know the reduction argument.",
+      "CPA-security requires randomized encryption. Deterministic = insecure under CPA.",
+      "PRF vs PRG: PRG stretches, PRF is keyed on inputs. Both are indistinguishable from random.",
+      "Know multi-message security — even a secure single-message scheme can fail with key reuse.",
+    ]
+  },
+  {
+    num: "W04",
+    title: "CPA-Secure Encryption, Block Cipher Modes & Theory",
+    subtitle: "Lectures 15–19 · Pages 276–385",
+    tags: [
+      {text:"CPA-secure cipher", cls:"tag-blue"},
+      {text:"ECB / CBC / CTR", cls:"tag-orange"},
+      {text:"Feistel Network", cls:"tag-purple"},
+      {text:"PRF → PRP", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"CPA-Secure Cipher from PRF", desc:"Enc(k, m): pick random x; output (x, Fₖ(x) ⊕ m). Dec(k, (x, c)): output Fₖ(x) ⊕ c. Security: adversary cannot predict Fₖ(x) for a fresh random x (by PRF security). Ciphertext is 2× length of plaintext (overhead)."},
+      {name:"Block Cipher Modes of Operation", desc:"To encrypt messages longer than one block using a block cipher (PRF/PRP). Each mode has different security and efficiency properties."},
+      {name:"ECB Mode (Electronic Code Book)", desc:"Each block encrypted independently: cᵢ = Fₖ(mᵢ). INSECURE: same plaintext block → same ciphertext block. Identical blocks reveal patterns (the famous ECB penguin image). Never use ECB for more than one block."},
+      {name:"CBC Mode (Cipher Block Chaining)", desc:"c₀ = IV (random). cᵢ = Fₖ(mᵢ ⊕ cᵢ₋₁). Each block depends on all previous. CPA-secure if IV is fresh and random. Decryption: mᵢ = Fₖ⁻¹(cᵢ) ⊕ cᵢ₋₁. Requires PRP (invertible)."},
+      {name:"CTR Mode (Counter Mode)", desc:"cᵢ = mᵢ ⊕ Fₖ(r ∥ i) where r is random nonce. Converts block cipher into stream cipher. CPA-secure. Parallelizable (unlike CBC). Does NOT require invertibility — can use PRF."},
+      {name:"OFB Mode (Output Feedback)", desc:"Pre-computes keystream independently of plaintext: yᵢ = Fₖ(yᵢ₋₁). cᵢ = mᵢ ⊕ yᵢ. Keystream can be precomputed. Not parallelizable for encryption."},
+      {name:"PRF → PRP (Pseudo-Random Permutation)", desc:"PRP = a keyed permutation that looks random. PRF generalizes to any output; PRP must be invertible (bijection). Block ciphers are modeled as PRPs. PRF Switching Lemma: if |X| is large, a PRP is indistinguishable from a PRF."},
+      {name:"Feistel Network (Theoretical Block Cipher)", desc:"Luby-Rackoff theorem: 3 rounds of Feistel with independent PRFs gives a PRP; 4 rounds gives a strong PRP. Feistel: Lᵢ = Rᵢ₋₁; Rᵢ = Lᵢ₋₁ ⊕ f(Rᵢ₋₁). Invertible: Rᵢ₋₁ = Lᵢ; Lᵢ₋₁ = Rᵢ ⊕ f(Lᵢ)."},
+    ],
+    mnemonic: "Block modes: <strong>ECB = Earthquake Crypto Badness</strong>. CBC = <strong>Chain Before Cipher</strong> (XOR first, encrypt after). CTR = <strong>Counter Turns block cipher into Stream</strong>. Remember: CTR is parallelizable, CBC is not.",
+    formulas: [
+      {name:"CPA-cipher from PRF", expr:"c = (x, Fₖ(x) ⊕ m), x←R"},
+      {name:"CBC Enc", expr:"cᵢ = Fₖ(mᵢ ⊕ cᵢ₋₁), c₀=IV"},
+      {name:"CBC Dec", expr:"mᵢ = Fₖ⁻¹(cᵢ) ⊕ cᵢ₋₁"},
+      {name:"CTR Enc", expr:"cᵢ = mᵢ ⊕ Fₖ(r‖i)"},
+      {name:"Feistel Round", expr:"Lᵢ=Rᵢ₋₁, Rᵢ=Lᵢ₋₁⊕f(Rᵢ₋₁)"},
+    ],
+    qa: [
+      {q:"Why is ECB mode insecure?", a:"ECB encrypts each block independently with the same key. Identical plaintext blocks produce identical ciphertext blocks, leaking structural patterns. The famous 'ECB penguin' demonstrates this: an image encrypted with ECB still shows the penguin's shape because pixel patterns repeat."},
+      {q:"Why does the CPA-secure cipher from PRF double the ciphertext size?", a:"The ciphertext is (x, Fₖ(x)⊕m). We must send the random x (same size as m) along with the encrypted block. This is the price of CPA security — fresh randomness per encryption."},
+      {q:"Why can CTR mode use a PRF while CBC mode needs a PRP?", a:"<strong>CBC decryption</strong> requires inverting the block cipher (mᵢ = Fₖ⁻¹(cᵢ)⊕cᵢ₋₁), so it needs an invertible function = PRP. <strong>CTR decryption</strong> uses the same computation as encryption (cᵢ⊕Fₖ(r‖i)), so no inversion needed — PRF suffices."},
+      {q:"State the Luby-Rackoff theorem.", a:"A 3-round Feistel network using independent PRFs at each round is a secure PRP. A 4-round Feistel is a secure SPRP (strong PRP, secure even when adversary sees both chosen plaintext and ciphertext). This provides the theoretical basis for block cipher design."},
+      {q:"What is the PRF Switching Lemma?", a:"If F is a secure PRP with domain X, then it is also indistinguishable from a PRF unless the adversary makes ≥ √|X| queries. For large block sizes (e.g., 128-bit → |X|=2^128), this boundary is astronomically high, so the distinction is negligible in practice."},
+      {q:"Compare CBC and CTR in terms of parallelizability and error propagation.", a:"<strong>CBC Encryption</strong>: sequential (each block depends on previous). <strong>CTR Encryption</strong>: fully parallel. <strong>CBC Decryption</strong>: parallel. For error propagation: a single bit error in CBC ciphertext corrupts 2 blocks; in CTR it corrupts only the corresponding bit position (no chain effect)."},
+    ],
+    tips: [
+      "ECB = always insecure for multi-block. CBC & CTR = CPA-secure with proper IV/nonce.",
+      "Know the specific formulas for CBC and CTR. These are commonly tested.",
+      "Feistel: 3 rounds → PRP, 4 rounds → SPRP. Memorize Luby-Rackoff theorem.",
+      "CTR mode: parallelizable, no block cipher inverse needed. CBC: not parallelizable for enc.",
+    ]
+  },
+  {
+    num: "W05",
+    title: "Practical Block Ciphers (DES/AES), Active Adversaries & MACs",
+    subtitle: "Lectures 20–24 · Pages 386–493",
+    tags: [
+      {text:"DES", cls:"tag-blue"},
+      {text:"AES", cls:"tag-orange"},
+      {text:"Active Adversary", cls:"tag-purple"},
+      {text:"MAC", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"Confusion-Diffusion Paradigm (Shannon)", desc:"Goal: build a random-looking permutation with large block length from small permutations. Confusion: makes the relationship between ciphertext and key complex (substitution). Diffusion: spreads plaintext influence across ciphertext (permutation). Used in DES and AES."},
+      {name:"Substitution-Permutation Network (SPN)", desc:"Alternating layers of S-boxes (substitution — confusion) and P-boxes (permutation — diffusion), with key mixing (XOR with round key). Forms the backbone of modern block ciphers. Each round: AddRoundKey → SubBytes → ShiftRows → MixColumns (AES)."},
+      {name:"DES (Data Encryption Standard)", desc:"56-bit key, 64-bit blocks, 16 Feistel rounds. Each round uses a 48-bit subkey. S-boxes provide non-linearity. Broken by exhaustive search (56-bit key too small). Triple-DES (3DES) = DES₃(DES₂⁻¹(DES₁(m))) with 112-bit effective security."},
+      {name:"AES (Advanced Encryption Standard)", desc:"128/192/256-bit keys, 128-bit blocks. Based on SPN (not Feistel). Rounds: 10/12/14. Each round: SubBytes (S-box), ShiftRows, MixColumns, AddRoundKey. No known practical attack on full AES."},
+      {name:"From Passive to Active Adversary", desc:"Passive (eavesdropper): only observes ciphertext. Active adversary: can modify, inject, delete, or reorder messages. CPA = chosen plaintext attack (active in enc only). CCA = chosen ciphertext attack (can also query decryption oracle)."},
+      {name:"Message Authentication Code (MAC)", desc:"Provides message integrity and authenticity (NOT confidentiality). Syntax: (KeyGen, Tag, Verify). Tag = t ← Tag(k, m). Verify: output 1 if valid. Security: EUF-CMA (Existential Unforgeability under Chosen Message Attack). Adversary cannot forge a valid (m, t) for any m not previously queried."},
+      {name:"MAC from PRF (Fixed-length MAC)", desc:"For fixed-length messages: t = Fₖ(m). Security: if F is a secure PRF, this is an EUF-CMA secure MAC. For variable-length messages, need MAC composition or CBC-MAC."},
+    ],
+    mnemonic: "DES vs AES memory trick: <strong>DES = Dead (56-bit key, broken)</strong>, <strong>AES = Alive and kicking (128+ bit)</strong>. MAC gives <strong>Authentication</strong>, not <strong>Secrecy</strong> — use the A-S distinction: MAC=Authenticity, SKE=Secrecy.",
+    formulas: [
+      {name:"3DES", expr:"C = DES_{k3}(DES_{k2}^{-1}(DES_{k1}(m)))"},
+      {name:"PRF-based MAC", expr:"t = Fₖ(m)"},
+      {name:"MAC Verify", expr:"1 if Fₖ(m)=t, else 0"},
+      {name:"AES Block size", expr:"128 bits (always)"},
+      {name:"DES key/block", expr:"56-bit key / 64-bit block"},
+    ],
+    qa: [
+      {q:"What is the confusion-diffusion paradigm? Who introduced it?", a:"Introduced by <strong>Claude Shannon</strong>. Confusion: each ciphertext bit should depend on many key bits (S-boxes achieve this). Diffusion: each plaintext bit should influence many ciphertext bits (permutation layers). Together they provide security against statistical attacks."},
+      {q:"Why is DES considered broken? What replaced it?", a:"DES uses a 56-bit key, allowing exhaustive search in ~2^56 operations (feasible with modern hardware — broken in 1999 in 22 hours). It was replaced by <strong>AES</strong> (Rijndael), selected by NIST in 2001, using 128/192/256-bit keys."},
+      {q:"What is the difference between an active and passive adversary?", a:"<strong>Passive adversary</strong>: only eavesdrops (observes ciphertext). <strong>Active adversary</strong>: can intercept, modify, inject, replay, or delete messages. Active attacks require both encryption security AND integrity/authentication (MAC)."},
+      {q:"Define EUF-CMA security for MACs.", a:"Existential Unforgeability under Chosen Message Attack. Adversary queries Tag(k, ·) polynomially many times on messages of its choice. It wins if it outputs a valid (m*, t*) where m* was never queried. MAC is secure if no PPT adversary wins with non-negligible probability."},
+      {q:"Can a MAC provide secrecy? Can an encryption scheme provide authenticity?", a:"<strong>No and No</strong>. A MAC tag is computed on the message in clear — the message content is visible if transmitted in plaintext. An encryption scheme provides no authenticity — an adversary can tamper with ciphertexts undetected. You need BOTH (→ Authenticated Encryption)."},
+      {q:"How does AES differ structurally from DES?", a:"<strong>DES</strong>: Feistel network (16 rounds, 64-bit block, 56-bit key). <strong>AES</strong>: Substitution-Permutation Network (not Feistel, 10/12/14 rounds, 128-bit block, 128/192/256-bit key). AES operates on a 4×4 byte state matrix; each round: SubBytes → ShiftRows → MixColumns → AddRoundKey."},
+    ],
+    tips: [
+      "DES: 56-bit key (broken). AES: 128/192/256-bit key (secure). 3DES uses 112-bit effective security.",
+      "MAC = integrity + authenticity, NOT confidentiality.",
+      "EUF-CMA: the formal security definition for MACs. Know the experiment.",
+      "Active adversary requires both SKE and MAC. Passive only requires SKE.",
+    ]
+  },
+  {
+    num: "W06",
+    title: "Information-Theoretic MACs & Hash Functions",
+    subtitle: "Lectures 25–29 · Pages 494–568",
+    tags: [
+      {text:"IT-MACs", cls:"tag-blue"},
+      {text:"Hash Functions", cls:"tag-orange"},
+      {text:"Collision Resistance", cls:"tag-purple"},
+      {text:"HMAC", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"Information-Theoretic MACs (IT-MACs)", desc:"MACs secure even against computationally unbounded adversaries. Key restriction: like perfect secrecy, the key cannot be reused (one-time MAC). Can achieve ε-almost universal hashing as construction. The probability of forgery is low (≤ ε) but never zero."},
+      {name:"Strongly Universal Hash Families", desc:"A family H = {h: M → T} is ε-AU (almost universal) if for any distinct m₀, m₁, Pr_h[h(m₀)=h(m₁)] ≤ ε. For a one-time IT-MAC: tag t = h(m) for random h from family. Forgery probability ≤ ε."},
+      {name:"Polynomial-based IT-MACs", desc:"Message m = (m₁, …, mₗ) ∈ F^ℓ. Key = (r, s) ∈ F². Tag = p(r) + s where p is the polynomial with coefficients mᵢ. Forgery probability ≤ ℓ/|F| (small if |F| is large)."},
+      {name:"Cryptographic Hash Functions", desc:"H: {0,1}* → {0,1}^n (compression). Three key properties: (1) Pre-image resistance: given y, hard to find x s.t. H(x)=y; (2) Second pre-image resistance: given x, hard to find x'≠x s.t. H(x)=H(x'); (3) Collision resistance (CR): hard to find any (x, x') with x≠x' and H(x)=H(x')."},
+      {name:"Merkle-Damgård Construction", desc:"Builds a hash function on arbitrary-length inputs from a fixed-length compression function h. IV → h(IV, m₁) → h(h₁, m₂) → … → h(hₗ, mₗ) = final hash. Used in SHA-1, SHA-2. Theorem: if h is CR, then MD-hash is CR."},
+      {name:"HMAC (Hash-based MAC)", desc:"HMAC(k, m) = H((k ⊕ opad) ∥ H((k ⊕ ipad) ∥ m)). Two nested hash calls. Proven secure if underlying hash is a PRF or if compression function is a PRF. Used in TLS, IPsec. Standard in practice."},
+      {name:"MAC from Hash: Hash-and-MAC", desc:"Simple construction: t = Fₖ(H(m)) where H is collision-resistant and F is a PRF-based MAC. If H is CR and F is EUF-CMA secure for fixed-length inputs, the combined scheme is EUF-CMA secure for arbitrary-length messages."},
+    ],
+    mnemonic: "<strong>Hash function properties by strength</strong>: Collision Resistance → Second Pre-image Resistance → Pre-image Resistance (CR is strongest, implies the others). Remember: <strong>CR ⟹ 2nd-PI ⟹ PI</strong> (strongest to weakest).",
+    formulas: [
+      {name:"Polynomial MAC tag", expr:"t = m₁r^ℓ + … + mₗr + s"},
+      {name:"MD construction", expr:"hᵢ = h(hᵢ₋₁ ∥ mᵢ), h₀=IV"},
+      {name:"HMAC", expr:"H((k⊕opad)‖H((k⊕ipad)‖m))"},
+      {name:"Forgery prob (poly MAC)", expr:"≤ ℓ/|F|"},
+      {name:"Hash-and-MAC", expr:"t = Fₖ(H(m))"},
+    ],
+    qa: [
+      {q:"What is the hierarchy of hash function security properties? Which is strongest?", a:"<strong>Collision Resistance (CR)</strong> is strongest — hardest to achieve. <strong>Second Pre-image Resistance (2nd-PI)</strong> is intermediate. <strong>Pre-image Resistance (PI)</strong> is weakest. Hierarchy: CR ⟹ 2nd-PI ⟹ PI. If a hash is collision-resistant, it is also 2nd-pre-image resistant. The converse is NOT true."},
+      {q:"What is the Merkle-Damgård construction? State its security theorem.", a:"MD builds a hash for arbitrary-length inputs by iterating a fixed-length compression function h. Chain: H₀=IV, Hᵢ=h(Hᵢ₋₁‖mᵢ), output Hₗ. <strong>Theorem</strong>: If h is collision-resistant, then the MD hash is collision-resistant. Padding is required to prevent length-extension attacks."},
+      {q:"What makes IT-MACs different from computationally-secure MACs?", a:"IT-MACs are secure even against <strong>computationally unbounded</strong> adversaries. Trade-off: cannot reuse the key (like OTP). Can only guarantee low forgery probability (not zero). Suitable for one-time authentication scenarios or settings requiring information-theoretic security."},
+      {q:"Why is HMAC preferred over a simple H(k‖m) construction?", a:"H(k‖m) is vulnerable to <strong>length-extension attacks</strong>: if you know H(k‖m), you can compute H(k‖m‖padding‖m') without knowing k (in MD-based hashes). HMAC's double-hashing structure prevents this. Also has a clean security proof assuming the compression function is a PRF."},
+      {q:"State the Polynomial MAC construction and its forgery probability.", a:"Message m=(m₁,…,mₗ) ∈ Fᵖ. Key = (r, s) random from F. Tag = t = m₁·r^ℓ + m₂·r^(ℓ-1) + … + mₗ·r + s. Forgery probability for any forger with 1 message-tag pair = <strong>ℓ/|F|</strong>. This is negligible when |F| is large (e.g., F = GF(2^128))."},
+    ],
+    tips: [
+      "CR ⟹ 2nd-PI ⟹ PI. Know the implication chain and that the converse doesn't hold.",
+      "Merkle-Damgård theorem: CR compression function ⟹ CR hash. But MD is vulnerable to length extension.",
+      "HMAC prevents length extension via nested hashing — the standard in practice.",
+      "IT-MACs: secure against unbounded adversaries but key not reusable.",
+    ]
+  },
+  {
+    num: "W07",
+    title: "Birthday Attacks, Random Oracle Model & Authenticated Encryption",
+    subtitle: "Lectures 30–33 · Pages 570–639",
+    tags: [
+      {text:"Birthday Attack", cls:"tag-blue"},
+      {text:"Random Oracle", cls:"tag-orange"},
+      {text:"Authenticated Encryption", cls:"tag-purple"},
+      {text:"Enc-then-MAC", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"Birthday Attack on Hash Functions", desc:"Naive attack: try 2^n+1 inputs → guaranteed collision (pigeonhole). Birthday attack: with q ≈ √(2^n) = 2^(n/2) random inputs, collision probability ≥ 1/2. So a 160-bit hash has only 80-bit collision security. This is why SHA-256 gives 128-bit security against collisions."},
+      {name:"Birthday Bound", desc:"If outputs are from a space of size N=2^n, after q ≈ 1.17·√N = 2^(n/2) queries, collision probability ≥ 1/2. Formula: Pr[Coll(q,N)] ≥ q(q-1)/(4N). Small-space version: memory-efficient algorithm using Floyd's cycle finding."},
+      {name:"Random Oracle Model (ROM)", desc:"A theoretical model where a hash function is treated as a truly random oracle (responds to each new query with a fresh random output, consistently). Enables cleaner proofs. Constructions proven in ROM may not be secure in standard model (but are practically trusted)."},
+      {name:"Hash Functions in ROM", desc:"In ROM: hash function H is a black-box that returns a uniformly random output for each new query. Security proofs in ROM mean: the scheme is secure IF the hash behaves like a perfect random function. Used for OAEP, RSA-PSS, Schnorr signatures."},
+      {name:"Authenticated Encryption (AE)", desc:"Combines confidentiality (encryption) + authenticity/integrity (MAC). Goal: provide all 3 properties: Privacy, Authenticity, Integrity. Achieved by combining SKE + MAC appropriately."},
+      {name:"Three AE Composition Approaches", desc:"(1) Encrypt-then-MAC (correct): c=Enc(k₁,m), t=MAC(k₂,c). (2) Encrypt-and-MAC (potentially insecure): c=Enc(k₁,m), t=MAC(k₂,m). (3) MAC-then-Encrypt (can be insecure). Encrypt-then-MAC is the provably secure approach."},
+      {name:"CCA Security (IND-CCA)", desc:"Chosen Ciphertext Attack. Adversary can query both encryption and decryption oracles (except for challenge ciphertext). Stronger than CPA. Authenticated encryption schemes typically achieve CCA security when composed correctly."},
+    ],
+    mnemonic: "Birthday attack: <strong>√N threshold</strong>. If hash output is n bits, collisions found in 2^(n/2) work. For SHA-256: 2^128 collision security. AE composition: always <strong>Encrypt-THEN-MAC</strong> (not and/before). Think: <strong>ETM = Excellent Team Method</strong>.",
+    formulas: [
+      {name:"Birthday bound", expr:"q ≈ √(2^n) for 50% collision prob"},
+      {name:"Collision probability", expr:"Pr[Coll] ≥ q(q-1)/4N"},
+      {name:"Enc-then-MAC", expr:"c=Enc(k₁,m); t=MAC(k₂,c)"},
+      {name:"SHA-256 collision security", expr:"2^128 (birthday bound of 256-bit)"},
+    ],
+    qa: [
+      {q:"Explain the birthday attack and why hash outputs need to be ≥ 256 bits.", a:"The birthday attack finds collisions with probability ≥ 1/2 after only O(2^(n/2)) hash evaluations (where n = output length). So a 128-bit hash has only 64-bit collision security (2^64 computations — feasible). A 256-bit hash gives 128-bit collision security (2^128 — infeasible). Therefore, SHA-256 or higher is needed."},
+      {q:"What are the 3 ways to combine SKE and MAC? Which is provably secure?", a:"(1) <strong>MAC-then-Encrypt</strong>: t=MAC(k₂,m), c=Enc(k₁,m‖t) — can be insecure (padding oracle attacks). (2) <strong>Encrypt-and-MAC</strong>: c=Enc(k₁,m), t=MAC(k₂,m) — MAC on plaintext can leak info. (3) <strong>Encrypt-then-MAC</strong>: c=Enc(k₁,m), t=MAC(k₂,c) — <strong>provably secure</strong>, yields CCA security."},
+      {q:"What is the Random Oracle Model? What is its main criticism?", a:"In ROM, the hash function H is modeled as a truly random oracle — a black box responding with uniform random outputs. It simplifies security proofs significantly. Criticism: No real hash function is a random oracle. Schemes secure in ROM may be insecure if the hash is instantiated concretely (Canetti-Goldreich-Halevi separation result)."},
+      {q:"What is CCA security? Why is it stronger than CPA?", a:"CCA (Chosen Ciphertext Attack): adversary can query a <strong>decryption oracle</strong> in addition to an encryption oracle (except cannot query the challenge ciphertext itself). A CCA adversary can 'manipulate' ciphertexts and observe decryption results — much more powerful than CPA. Authenticated encryption (Enc-then-MAC) gives CCA security."},
+      {q:"What small-space birthday attack reduces memory requirements?", a:"<strong>Floyd's cycle detection algorithm</strong> (or Pollard's rho method): uses two pointers moving at different speeds in the hash function's iteration chain. Detects a cycle (collision) in O(√N) time with O(1) memory instead of O(√N) memory needed by the naive birthday attack."},
+    ],
+    tips: [
+      "Birthday attack: 2^(n/2) work for n-bit hash. SHA-256 → 128-bit collision security.",
+      "Encrypt-then-MAC is THE correct composition. MAC-then-Encrypt and Encrypt-and-MAC can fail.",
+      "ROM is a useful heuristic model — proofs in ROM are not standard model proofs.",
+      "AE = SKE + MAC. Result = CCA security (strongest symmetric-key notion).",
+    ]
+  },
+  {
+    num: "W08",
+    title: "CCA-Secure Ciphers, Key Exchange & Cyclic Groups",
+    subtitle: "Lectures 34–38 · Pages 641–727",
+    tags: [
+      {text:"CCA Security", cls:"tag-blue"},
+      {text:"Diffie-Hellman", cls:"tag-orange"},
+      {text:"Cyclic Groups", cls:"tag-purple"},
+      {text:"Key Exchange", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"CCA-Secure Composition (Enc-then-MAC)", desc:"Theorem: If Π_E is CPA-secure and Π_M is EUF-CMA secure MAC (with independent keys k₁, k₂), then Enc-then-MAC is CCA-secure. Proof: CCA adversary cannot create valid ciphertexts without knowing k₂ (EUF-CMA prevents MAC forgery)."},
+      {name:"Key-Exchange Problem", desc:"How can sender and receiver, with no pre-shared information, agree on a common secret key over a public channel (against eavesdroppers)? This is the fundamental problem solved by public-key cryptography."},
+      {name:"Diffie-Hellman Key Exchange (DHKE)", desc:"Public parameters: cyclic group G of prime order q, generator g. Alice picks α ∈ Zq, sends A = gᵅ. Bob picks β ∈ Zq, sends B = gᵝ. Shared key: K = gᵅᵝ = Bᵅ (Alice) = Aᵝ (Bob). Eavesdropper sees gᵅ, gᵝ but cannot compute gᵅᵝ (CDH assumption)."},
+      {name:"Security of DHKE", desc:"Security relies on DDH (Decisional Diffie-Hellman) assumption: given (g, gᵅ, gᵝ, gᵞ), hard to decide if γ = αβ mod q. Weaker: CDH (Computational DH): given (g, gᵅ, gᵝ), hard to compute gᵅᵝ. Even weaker: DLog: given (g, gᵅ), hard to compute α."},
+      {name:"Cyclic Groups", desc:"A group G is cyclic if all elements are powers of one generator g: G = {g⁰, g¹, g², …, g^(q-1)} = ⟨g⟩. Order |G| = q. In Zp* (integers mod prime p), every element of prime order q divides p-1. Used as the setting for DH and elliptic curve crypto."},
+      {name:"Group Theory Basics", desc:"Group (G, ·): closure, associativity, identity (e), inverse. Cyclic group: generated by one element g. In Zp*: order is p-1 (not prime in general). Subgroup of order q: elements {g^(k·q/q)} — all rth residues if p = rq+1. Lagrange's theorem: subgroup order divides group order."},
+    ],
+    mnemonic: "Diffie-Hellman: <strong>Alice sends gᵅ, Bob sends gᵝ, shared secret = gᵅᵝ</strong>. The eavesdropper only sees gᵅ and gᵝ — computing gᵅᵝ requires solving CDH. Memory trick: <strong>DH = Dry Handshake</strong> (no prior secret needed, just public exchange).",
+    formulas: [
+      {name:"DH key exchange", expr:"K = g^{αβ} = B^α = A^β"},
+      {name:"DLog problem", expr:"Given g^α, find α"},
+      {name:"CDH problem", expr:"Given g^α, g^β, compute g^{αβ}"},
+      {name:"DDH assumption", expr:"(g,g^α,g^β,g^{αβ}) ≈ (g,g^α,g^β,g^γ)"},
+    ],
+    qa: [
+      {q:"Describe the Diffie-Hellman key exchange protocol. What is the shared secret?", a:"Public: group G of order q, generator g. <strong>Alice</strong>: pick α ← Zq, send A=g^α. <strong>Bob</strong>: pick β ← Zq, send B=g^β. Shared secret: K = g^(αβ). Alice computes K = B^α = (g^β)^α. Bob computes K = A^β = (g^α)^β. Both get the same K. Eavesdropper sees g^α, g^β but cannot compute g^(αβ) by CDH assumption."},
+      {q:"What is the hierarchy of hardness assumptions for DH cryptography?", a:"DLog ≥ CDH ≥ DDH (DDH hardest to break, implies CDH hardness, which implies DLog hardness). If DDH is easy, CDH is easy. If CDH is easy, DLog is easy (but converse not proven). For security proofs: DDH ⟹ CDH ⟹ DLog is the implication chain."},
+      {q:"What is a cyclic group? Give two examples used in cryptography.", a:"A group G where all elements can be written as powers of one generator g: G = {g⁰, g¹, …, g^(q-1)}. Examples: (1) <strong>Subgroups of Zp*</strong>: set of qth residues modulo a large prime p = rq+1. (2) <strong>Elliptic curve groups</strong> E(Fp): points on an elliptic curve over a finite field — the group operation is point addition."},
+      {q:"Why is CCA security stronger than CPA security? What attack does it prevent?", a:"CCA adversary can query a decryption oracle on ciphertexts of its choice. This models scenarios like padding oracle attacks where an adversary submits modified ciphertexts and learns if decryption succeeds. CPA only models passive eavesdroppers; CCA models active adversaries who interact with the system."},
+      {q:"Why does DHKE not provide authentication (man-in-the-middle)?", a:"DHKE provides privacy against eavesdroppers but NOT authentication. A man-in-the-middle can intercept Alice's g^α, replace it with g^α', and do a separate DH with Bob. Both Alice and Bob think they've established a shared key with each other, but they've actually established separate keys with the attacker. Fix: add authentication via certificates or digital signatures."},
+    ],
+    tips: [
+      "DH assumptions: DDH ⟹ CDH ⟹ DLog. DDH is the strongest assumption (most restrictive).",
+      "Enc-then-MAC gives CCA security. Know the formal theorem.",
+      "DHKE is anonymous — no authentication. Susceptible to man-in-the-middle.",
+      "Cyclic group: generated by g, order q (prime). Elements are g⁰ to g^(q-1).",
+    ]
+  },
+  {
+    num: "W09",
+    title: "DLog Assumptions, Elliptic Curves & Public-Key Encryption",
+    subtitle: "Lectures 39–43 · Pages 729–801",
+    tags: [
+      {text:"Discrete Log", cls:"tag-blue"},
+      {text:"Elliptic Curves", cls:"tag-orange"},
+      {text:"PKE Syntax", cls:"tag-purple"},
+      {text:"DDH Applications", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"Candidate Cyclic Groups (Subgroups of Zp*)", desc:"Take large prime p = rq+1 (q prime). The subgroup of rth residues mod p has prime order q. The generator g = h^r mod p for any h with h^q ≢ 1 (mod p). For security: p ≥ 2048 bits, q ≥ 256 bits. DLog in this group has best-known algorithm GNFS requiring 2^(p^(1/3)) time."},
+      {name:"Elliptic Curve Groups", desc:"Curve: E: y² = x³ + ax + b over Fp (finite field). Points form an additive group. Addition: geometric chord-and-tangent rule. Point at infinity O = identity. Subgroup of prime order q. Advantage: for n-bit prime, best DLog attack needs 2^(n/2) — so 256-bit prime gives 128-bit security. Much smaller keys than Zp* groups."},
+      {name:"EC Point Addition", desc:"For P=(x₁,y₁), Q=(x₂,y₂), P≠Q: slope λ=(y₂-y₁)/(x₂-x₁); x₃=λ²-x₁-x₂; y₃=λ(x₁-x₃)-y₁. For P=Q (doubling): λ=(3x₁²+a)/(2y₁). Identity: P+O=P. Inverse: -P=(x₁,-y₁)."},
+      {name:"Cryptographic Applications of DLog", desc:"Schnorr Identification, DHKE, ElGamal encryption, DSA/ECDSA signatures. All these reduce to hardness of DLog or CDH/DDH in cyclic groups."},
+      {name:"Public-Key Encryption (PKE) Syntax", desc:"(KeyGen, Enc, Dec). KeyGen: outputs (pk, sk). Enc(pk, m): uses public key to encrypt. Dec(sk, c): uses secret key to decrypt. Anyone with pk can encrypt; only holder of sk can decrypt. No shared key agreement needed."},
+      {name:"CPA Security for PKE", desc:"Adversary sees pk (public). Sends m₀, m₁; gets c*=Enc(pk, mᵦ). Guesses b. Scheme is CPA-secure if advantage ≤ negl(n). Note: the adversary automatically has 'encryption oracle' by using pk — so CPA security for PKE is the baseline (not IND-EAV)."},
+    ],
+    mnemonic: "EC vs Zp* key sizes: <strong>EC 256-bit ≈ RSA/DH 3072-bit security</strong>. ECs are more efficient because DLog on ECs has no sub-exponential algorithm. Think: <strong>Elliptic Curves = Elegant Compression</strong> of security into small keys.",
+    formulas: [
+      {name:"EC curve equation", expr:"y² = x³ + ax + b (mod p)"},
+      {name:"EC point addition slope", expr:"λ = (y₂-y₁)/(x₂-x₁) mod p"},
+      {name:"EC doubling slope", expr:"λ = (3x₁²+a)/(2y₁) mod p"},
+      {name:"Non-singular condition", expr:"4a³ + 27b² ≠ 0"},
+      {name:"PKE correctness", expr:"Dec(sk, Enc(pk,m)) = m"},
+    ],
+    qa: [
+      {q:"Why are elliptic curve groups preferred over Zp* subgroups for modern crypto?", a:"For the same security level, EC keys are much smaller. For 128-bit security: EC needs ~256-bit key; Zp* subgroup needs ~3072-bit key. The best DLog attack on EC groups is generic (2^(n/2)), while Zp* groups are vulnerable to Number Field Sieve (sub-exponential). ECs are also supported by pairings for advanced crypto."},
+      {q:"What is the point at infinity O in an elliptic curve group?", a:"O is the identity element of the group operation on EC points. It satisfies: P + O = P for all points P. Geometrically, it's a 'point at infinity' on every vertical line — two inverse points P and -P = (x, -y) sum to O. It's not a real coordinate but a formal element."},
+      {q:"What is the syntax of a Public-Key Encryption scheme?", a:"Three algorithms: <strong>KeyGen(1^n)</strong> → (pk, sk). <strong>Enc(pk, m)</strong> → c (randomized). <strong>Dec(sk, c)</strong> → m. Correctness: Dec(sk, Enc(pk,m)) = m. Security: CPA (IND-CPA) is the baseline — adversary has pk so it can encrypt on its own, making IND-CPA the natural definition."},
+      {q:"What is the difference between PKE CPA security and SKE CPA security?", a:"In <strong>SKE</strong>: adversary does not have the key and must query encryption oracle. In <strong>PKE</strong>: adversary has pk and can encrypt any message itself — so encryption oracle is automatically available. PKE CPA security means the adversary cannot break indistinguishability even with pk. Therefore PKE IND-EAV = PKE IND-CPA automatically."},
+    ],
+    tips: [
+      "EC groups: 256-bit prime → 128-bit security. Zp* groups: need 3072-bit for 128-bit security.",
+      "Non-singular condition: 4a³+27b²≠0 ensures 3 distinct roots (essential for group structure).",
+      "PKE: Enc uses pk (public), Dec uses sk (secret). Anyone can encrypt, only owner can decrypt.",
+      "DLog hardness in ECs is generic (2^(n/2)) — no sub-exponential attack known.",
+    ]
+  },
+  {
+    num: "W10",
+    title: "ElGamal, RSA & Hybrid Public-Key Encryption",
+    subtitle: "Lectures 44–48 · Pages 803–885",
+    tags: [
+      {text:"ElGamal PKE", cls:"tag-blue"},
+      {text:"RSA", cls:"tag-orange"},
+      {text:"Hybrid PKE", cls:"tag-purple"},
+      {text:"OAEP", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"ElGamal Public-Key Encryption", desc:"Group G of order q, generator g. KeyGen: sk=α∈Zq, pk=u=g^α. Enc(pk, m): pick β∈Zq; c₁=g^β, c₂=m·u^β. Dec(sk, (c₁,c₂)): m = c₂·(c₁^α)^(-1) = c₂/c₁^α. Security: IND-CPA under DDH assumption. Intuition: key K=g^(αβ)=u^β is indistinguishable from random (DDH), so c₂=m·K hides m."},
+      {name:"RSA Assumption", desc:"N = p·q (product of two large primes). RSA assumption: given N, e (public exponent), and c = mᵉ mod N, it is hard to recover m (i.e., hard to compute the eth root mod N). Related to factoring, but not proven equivalent. e typically = 65537 = 2^16+1 (Fermat prime)."},
+      {name:"RSA Cryptosystem (Textbook RSA)", desc:"KeyGen: N=pq; pick e with gcd(e,φ(N))=1; d=e⁻¹ mod φ(N). pk=(N,e), sk=(N,d,p,q). Enc(pk, m): c=mᵉ mod N. Dec(sk, c): m=c^d mod N. Correctness: m^(ed) = m mod N (by Euler's theorem). Textbook RSA is DETERMINISTIC and NOT CPA-secure."},
+      {name:"OAEP (Optimal Asymmetric Encryption Padding)", desc:"Converts RSA into a CPA/CCA-secure scheme by adding randomized padding in ROM. The padded message runs through two hash-based mixing steps before RSA encryption. RSA-OAEP is the standard secure way to use RSA for encryption. Provides CCA security in ROM."},
+      {name:"Hybrid PKE (KEM-DEM Paradigm)", desc:"Public-key encryption is slow (modular exponentiation). Solution: KEM (Key Encapsulation Mechanism) + DEM (Data Encapsulation Mechanism). KEM generates/encapsulates a random symmetric key using PKE; DEM encrypts actual data with symmetric cipher. Hybrid = efficiency of symmetric + key management of PKE."},
+      {name:"KEM-DEM Construction", desc:"KeyGen: standard PKE key generation. Enc(pk, m): generate random key k, compute (K, c₁)=KEM.Enc(pk), c₂=SKE.Enc(k, m), output (c₁, c₂). Dec(sk, (c₁, c₂)): k=KEM.Dec(sk, c₁), m=SKE.Dec(k, c₂). Security: if KEM is CCA-secure KEM and SKE is CPA-secure, then hybrid is CCA-secure PKE."},
+    ],
+    mnemonic: "ElGamal: <strong>2 group elements ciphertext (c₁=g^β, c₂=m·u^β)</strong>, security = DDH. RSA: <strong>c=mᵉ mod N, m=c^d mod N</strong>, ed≡1 mod φ(N). Remember: Textbook RSA = Deterministic = INSECURE (need OAEP for CPA security).",
+    formulas: [
+      {name:"ElGamal Enc", expr:"c₁=g^β, c₂=m·u^β (u=g^α=pk)"},
+      {name:"ElGamal Dec", expr:"m = c₂ · (c₁^α)^{-1}"},
+      {name:"RSA Enc", expr:"c = m^e mod N"},
+      {name:"RSA Dec", expr:"m = c^d mod N"},
+      {name:"RSA key relation", expr:"ed ≡ 1 (mod φ(N))"},
+      {name:"φ(N) for N=pq", expr:"φ(N) = (p-1)(q-1)"},
+    ],
+    qa: [
+      {q:"Describe ElGamal encryption. What security assumption does it rely on?", a:"Public params: group G, generator g, order q. Key: sk=α, pk=u=g^α. <strong>Enc(pk, m)</strong>: pick random β; c=(g^β, m·u^β). <strong>Dec(sk, c)</strong>: m = c₂·(c₁^α)^(-1). Security: <strong>DDH assumption</strong> — u^β = g^(αβ) is indistinguishable from random group element, so c₂=m·random hides m. CPA-secure under DDH."},
+      {q:"What is textbook RSA and why is it insecure?", a:"Textbook RSA: Enc(m) = mᵉ mod N, Dec(c) = c^d mod N. It is <strong>deterministic</strong>: same message always encrypts to same ciphertext. Insecure because: (1) Adversary can detect repeated messages. (2) For small messages, mᵉ < N means c = mᵉ and m = c^(1/e) is computable directly. Must use randomized padding (OAEP)."},
+      {q:"Explain the KEM-DEM paradigm for hybrid encryption.", a:"<strong>KEM</strong> (Key Encapsulation): use PKE to encrypt/encapsulate a random symmetric key k. Output (k, c₁) where c₁ is the encapsulation. <strong>DEM</strong> (Data Encapsulation): encrypt actual message m with symmetric cipher using k: c₂=SKE.Enc(k,m). Final ciphertext: (c₁, c₂). Decryptor recovers k from c₁ using sk, then recovers m from c₂ using k. Efficient: only a small key is PKE-encrypted."},
+      {q:"What is φ(N) for N=pq? Why is it used in RSA?", a:"For N=pq (product of two distinct primes): φ(N) = (p-1)(q-1). This is Euler's totient function. In RSA, we need ed≡1 mod φ(N) so that m^(ed) = m^(1+kφ(N)) ≡ m (mod N) by Euler's theorem — enabling correct decryption. Knowledge of φ(N) is equivalent to knowing the factorization of N."},
+      {q:"What is the RSA assumption? Is it equivalent to factoring?", a:"RSA assumption: given (N, e, c=mᵉ mod N), hard to compute m (compute eth root mod N). Not proven equivalent to factoring — factoring N would certainly break RSA, but RSA might be breakable without factoring. However, no separation is known. In practice, key sizes for RSA match factoring difficulty."},
+    ],
+    tips: [
+      "Textbook RSA = deterministic = INSECURE. Always use OAEP in practice.",
+      "ElGamal CPA-security ← DDH assumption. Know the enc/dec formulas.",
+      "φ(N) = (p-1)(q-1) for N=pq. ed≡1 mod φ(N) is the key relation.",
+      "Hybrid PKE: KEM (PKE) for key + DEM (symmetric) for data. This is how TLS works.",
+    ]
+  },
+  {
+    num: "W11",
+    title: "CCA-Secure PKE, Digital Signatures & RSA Signatures",
+    subtitle: "Lectures 49–53 · Pages 887–960",
+    tags: [
+      {text:"CCA-Secure PKE", cls:"tag-blue"},
+      {text:"Digital Signatures", cls:"tag-orange"},
+      {text:"RSA-FDH", cls:"tag-purple"},
+      {text:"Identification", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"CCA-Secure PKE (Overview)", desc:"Adversary can query decryption oracle on any ciphertext (except challenge c*). Much stronger than CPA. Achieved by: (1) Enc-then-MAC in symmetric setting; (2) OAEP for RSA in ROM; (3) Cramer-Shoup scheme in standard model; (4) Fujisaki-Okamoto (FO) transform from CPA to CCA in ROM."},
+      {name:"CCA-Secure PKE from DH (Cramer-Shoup)", desc:"Uses DDH assumption in standard model (no ROM). Group G, generator g₁, g₂. pk has additional elements for authentication. Ciphertext includes a hash-based authenticator. Decryption rejects if authenticator fails — prevents CCA attacks. Complex but provably CCA-secure without ROM."},
+      {name:"Digital Signatures Syntax", desc:"(KeyGen, Sign, Verify). KeyGen → (pk, sk). Sign(sk, m) → σ. Verify(pk, m, σ) → {0,1}. Correctness: Verify(pk, m, Sign(sk, m)) = 1. Security: EUF-CMA (Existential Unforgeability under CMA). Adversary cannot forge σ* on any new m* even after seeing many valid message-signature pairs."},
+      {name:"Digital Signatures vs MACs", desc:"MAC: symmetric (same key for tag and verify). Signer = verifier. No public verifiability. Signature: asymmetric (sk for signing, pk for verification). Anyone with pk can verify. Provides non-repudiation — signer cannot deny signing."},
+      {name:"RSA Signatures (Textbook)", desc:"Sign(sk, m): σ = m^d mod N (using secret key d). Verify(pk, m, σ): check σᵉ = m mod N. Textbook RSA signing is INSECURE: adversary can forge signatures by choosing σ first and computing m=σᵉ mod N. Need hash-and-sign: sign H(m) instead of m."},
+      {name:"RSA-FDH (Full Domain Hash)", desc:"Sign(sk, m): σ = H(m)^d mod N where H: {0,1}* → Zn* is a hash function modeled as random oracle. Verify(pk, m, σ): check σᵉ = H(m) mod N. RSA-FDH is EUF-CMA secure under RSA assumption in ROM. The hash prevents the forgery attack on textbook RSA."},
+      {name:"Identification Schemes", desc:"Interactive protocol: Prover proves identity to Verifier without revealing the secret key. 3-move structure: Commitment → Challenge → Response. If secure, converts to digital signature via Fiat-Shamir transform (replace Verifier with hash oracle in ROM). Schnorr ID scheme → Schnorr signature."},
+    ],
+    mnemonic: "Digital Signature properties: <strong>Sign with PRIVATE key, Verify with PUBLIC key</strong> (opposite of encryption!). Remember the key reversal: <strong>Encryption: pk to lock, sk to unlock. Signatures: sk to sign, pk to verify.</strong>",
+    formulas: [
+      {name:"RSA Sign", expr:"σ = m^d mod N (or H(m)^d)"},
+      {name:"RSA Verify", expr:"σ^e ≡ H(m) (mod N)"},
+      {name:"Schnorr commitment", expr:"R = g^r (r random)"},
+      {name:"Schnorr response", expr:"s = r + c·α (mod q)"},
+      {name:"Signature correctness", expr:"Verify(pk, m, Sign(sk,m)) = 1"},
+    ],
+    qa: [
+      {q:"What is EUF-CMA security for digital signatures?", a:"Existential Unforgeability under Chosen Message Attack. Adversary is given pk and can query Sign(sk, ·) on messages of its choice. It wins if it outputs a valid (m*, σ*) for a message m* it never queried. Scheme is secure if no PPT adversary wins with non-negligible probability."},
+      {q:"How do digital signatures differ from MACs? What additional property do signatures provide?", a:"<strong>MAC</strong>: symmetric key, same k for tagging and verification, private. <strong>Signatures</strong>: asymmetric, sk for signing, pk for verification. Anyone can verify with public key. Additional property: <strong>Non-repudiation</strong> — the signer cannot deny signing (since only they know sk). MACs don't provide this (both parties share k)."},
+      {q:"Why is textbook RSA signing insecure? How does RSA-FDH fix it?", a:"<strong>Forgery attack</strong>: adversary picks random σ, computes m=σᵉ mod N. This is a valid (m, σ) pair without ever querying Sign. <strong>Fix (FDH)</strong>: sign H(m) instead of m. Adversary would need H(m*)=mᵉ for some new m*, but H is modeled as random oracle — it cannot control H's outputs, making forgery hard under RSA assumption."},
+      {q:"Describe the Schnorr identification scheme (3-move protocol).", a:"Public: group G of order q, generator g. Secret: α. Public key: u=g^α. (1) <strong>Commitment</strong>: Prover picks r←Zq, sends R=g^r. (2) <strong>Challenge</strong>: Verifier sends random c←Zq. (3) <strong>Response</strong>: Prover sends s=r+c·α mod q. <strong>Verify</strong>: check g^s = R·u^c. Soundness: impersonator cannot guess c in advance. Zero-knowledge: s reveals nothing about α."},
+      {q:"What is the Fiat-Shamir transform?", a:"Converts a 3-move interactive identification scheme into a non-interactive digital signature in the ROM. Replace the verifier's challenge with a hash of (commitment, message): c = H(R ∥ m). Signature = (R, s). Verification: check g^s = R · u^(H(R‖m)). Security: EUF-CMA under the DLog assumption in ROM."},
+    ],
+    tips: [
+      "Sign with SK, verify with PK — opposite of encryption (Enc with PK, Dec with SK).",
+      "RSA-FDH: sign H(m)^d, verify σ^e=H(m). Hash prevents the forgery attack.",
+      "EUF-CMA: cannot forge even after seeing many message-signature pairs.",
+      "Schnorr identification + Fiat-Shamir = Schnorr signature (a classic exam topic).",
+    ]
+  },
+  {
+    num: "W12",
+    title: "Schnorr Signatures, TLS/SSL, Secret Sharing & Zero-Knowledge",
+    subtitle: "Lectures 54–59 · Pages 963–1054",
+    tags: [
+      {text:"Schnorr Signature", cls:"tag-blue"},
+      {text:"TLS/SSL", cls:"tag-orange"},
+      {text:"Secret Sharing", cls:"tag-purple"},
+      {text:"Zero-Knowledge", cls:"tag-green"},
+    ],
+    concepts: [
+      {name:"Schnorr Signature Scheme", desc:"Derived from Schnorr ID via Fiat-Shamir. Sign(sk, m): pick r←Zq; R=g^r; c=H(R‖m); s=r+c·α mod q. σ=(R,s). Verify(pk, m, σ): check g^s = R·u^c where u=g^α. EUF-CMA secure under DLog in ROM. Basis for EdDSA (used in modern protocols) and Bitcoin."},
+      {name:"Number Theory Essentials", desc:"Zn* = {a: gcd(a,n)=1}. Euler's theorem: a^φ(n) ≡ 1 (mod n). Fermat's little theorem: a^(p-1) ≡ 1 (mod p) for prime p. Chinese Remainder Theorem (CRT): system of congruences has a unique solution mod n₁n₂ if gcd(n₁,n₂)=1. Used in RSA (for efficient computation and key generation)."},
+      {name:"Secret Sharing (Shamir's Scheme)", desc:"(t, n)-threshold scheme: split secret s into n shares so that any t shares can reconstruct s but any t-1 shares reveal nothing. Construction: random polynomial f(x) of degree t-1 with f(0)=s. Share i: sᵢ = f(i). Reconstruct: Lagrange interpolation from any t shares."},
+      {name:"Shamir Secret Sharing Security", desc:"Information-theoretic security: any t-1 shares reveal zero information about secret s (even to unbounded adversary). Reconstruction: t or more shares → unique polynomial → s=f(0). Applications: distributed key storage, multi-party computation, threshold cryptography."},
+      {name:"Zero-Knowledge Proofs (ZKP)", desc:"A prover proves a statement is true to a verifier without revealing any information beyond the statement itself. 3 properties: Completeness (honest prover convinces verifier), Soundness (cheating prover caught), Zero-knowledge (verifier learns nothing). Example: proving knowledge of graph isomorphism without revealing the mapping."},
+      {name:"Zero-Knowledge: Graph Isomorphism", desc:"Prover knows isomorphism π: G₁→G₂. Commit: pick random permutation π', compute H=π'(G₁). Challenge: verifier picks b∈{0,1}. Response: if b=0, reveal π' (show H=π'(G₁)); if b=1, reveal π'∘π^(-1) (show H is isomorphic to G₂). Repeat t times: soundness error = (1/2)^t."},
+      {name:"TLS/SSL Overview", desc:"Handshake protocol: (1) Client hello (supported cipher suites). (2) Server certificate (digital signature to authenticate). (3) Key exchange (DH or RSA-based KEM). (4) Session keys derived. Data: encrypted + authenticated using negotiated symmetric algorithms (AES-GCM or ChaCha20-Poly1305). All crypto primitives from this course come together here."},
+    ],
+    mnemonic: "Shamir Secret Sharing: <strong>t-1 shares = zero info, t shares = full secret</strong>. Think of it as a polynomial of degree t-1: you need t points to uniquely determine a polynomial (Lagrange interpolation). <strong>f(0)=secret, f(1)...f(n)=shares</strong>.",
+    formulas: [
+      {name:"Schnorr response", expr:"s = r + c·α mod q"},
+      {name:"Schnorr verify", expr:"g^s = R · u^c"},
+      {name:"Shamir share", expr:"sᵢ = f(i), f(x)=s+a₁x+…+a_{t-1}x^{t-1}"},
+      {name:"Lagrange interpolation", expr:"f(0) = Σ sᵢ · ∏_{j≠i} (-j)/(i-j)"},
+      {name:"Euler's theorem", expr:"a^{φ(n)} ≡ 1 (mod n), gcd(a,n)=1"},
+    ],
+    qa: [
+      {q:"Describe Shamir's (t,n)-threshold secret sharing scheme.", a:"Choose a random polynomial f(x) = s + a₁x + … + a_{t-1}x^(t-1) of degree t-1 over a finite field F with f(0)=s (the secret). Give share sᵢ=f(i) to party i. Any t parties reconstruct s=f(0) by Lagrange interpolation. Any t-1 parties have zero information about s (information-theoretically secure — the polynomial is 'completed' by t points)."},
+      {q:"What are the 3 properties of a Zero-Knowledge Proof?", a:"(1) <strong>Completeness</strong>: if the statement is true and both parties are honest, the verifier accepts with probability ≥ 1. (2) <strong>Soundness</strong>: if the statement is false, a cheating prover can convince the verifier only with negligible probability. (3) <strong>Zero-Knowledge</strong>: the verifier learns nothing beyond the truth of the statement (the view of the verifier can be simulated without the prover's secret)."},
+      {q:"How does the graph isomorphism ZKP work? What is its soundness error per round?", a:"Prover knows isomorphism π: G₁→G₂. Each round: (1) Prover picks random permutation π', computes H=π'(G₁) and commits. (2) Verifier challenges with b∈{0,1}. (3) If b=0: reveal π' (prove H≅G₁); if b=1: reveal π'∘π^(-1) (prove H≅G₂). Cheating prover can only answer ONE of two challenges — soundness error = 1/2 per round. After t rounds: (1/2)^t."},
+      {q:"What role does each cryptographic primitive play in TLS/SSL?", a:"<strong>Digital Certificates</strong>: authenticate server identity (RSA/ECDSA signatures). <strong>Key Exchange</strong>: establish session keys (ECDH or RSA-KEM). <strong>Symmetric Encryption</strong>: encrypt data (AES-GCM). <strong>MAC</strong>: authenticate/integrity protect data (HMAC-SHA256 or AEAD). Hash functions: certificate fingerprints, PRF for key derivation. TLS = all primitives from this course working together."},
+      {q:"What is the difference between interactive and non-interactive zero-knowledge proofs?", a:"<strong>Interactive ZKP</strong>: requires back-and-forth between prover and verifier (like Schnorr ID or graph isomorphism protocol). <strong>Non-interactive ZKP</strong> (NIZK): prover generates a proof string without interaction — requires ROM (Fiat-Shamir transform) or CRS (common reference string). NIZKs enable signatures (Schnorr signature = Schnorr ID + Fiat-Shamir)."},
+    ],
+    tips: [
+      "Shamir SS: polynomial of degree t-1, need t points to reconstruct. IT-secure (even vs unbounded adversaries).",
+      "ZKP three properties: Completeness, Soundness, Zero-knowledge. Know the graph isomorphism example.",
+      "Schnorr signature: (R, s) where s=r+c·α, c=H(R‖m). Very commonly asked.",
+      "TLS brings everything together — certificates, DH, AES, HMAC. Know the high-level flow.",
+    ]
+  }
+];
+
+let doneWeeks = JSON.parse(localStorage.getItem('cryptoDone') || '[]');
+
+function updateProgress() {
+  const done = doneWeeks.length;
+  const pct = Math.round(done / 12 * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = done + ' / 12 done';
+}
+
+function renderNav() {
+  const nav = document.getElementById('weekNav');
+  nav.innerHTML = weeks.map((w, i) => {
+    const done = doneWeeks.includes(i);
+    return `<button class="week-btn ${done?'done':''}" onclick="scrollToWeek(${i})">${w.num}</button>`;
+  }).join('');
+}
+
+function scrollToWeek(i) {
+  document.getElementById('week-card-'+i).scrollIntoView({behavior:'smooth', block:'start'});
+  openWeek(i);
+}
+
+function openWeek(i) {
+  const card = document.getElementById('week-card-'+i);
+  card.classList.add('open', 'active');
+}
+
+function toggleWeek(i) {
+  const card = document.getElementById('week-card-'+i);
+  card.classList.toggle('open');
+}
+
+function toggleQA(el) {
+  const ans = el.nextElementSibling;
+  ans.classList.toggle('show');
+}
+
+function markDone(i, btn) {
+  if (!doneWeeks.includes(i)) {
+    doneWeeks.push(i);
+    btn.textContent = '✓ Marked Done!';
+    btn.classList.add('done');
+    const navBtn = document.getElementById('weekNav').querySelectorAll('.week-btn')[i];
+    navBtn.classList.add('done');
+  } else {
+    doneWeeks = doneWeeks.filter(x=>x!==i);
+    btn.textContent = 'Mark as Done';
+    btn.classList.remove('done');
+    const navBtn = document.getElementById('weekNav').querySelectorAll('.week-btn')[i];
+    navBtn.classList.remove('done');
+  }
+  localStorage.setItem('cryptoDone', JSON.stringify(doneWeeks));
+  updateProgress();
+}
+
+function renderWeeks() {
+  const container = document.getElementById('weekCards');
+  container.innerHTML = weeks.map((w, i) => {
+    const done = doneWeeks.includes(i);
+    const tagsHtml = w.tags.map(t => `<span class="tag ${t.cls}">${t.text}</span>`).join('');
+    const conceptsHtml = w.concepts.map(c => `
+      <div class="concept">
+        <div class="concept-name">${c.name}</div>
+        <div class="concept-desc">${c.desc}</div>
+      </div>
+    `).join('');
+    const formulasHtml = w.formulas ? `
+      <div class="section-hdr">Key Formulas</div>
+      <div class="formula-grid">
+        ${w.formulas.map(f=>`<div class="formula-card"><div class="formula-name">${f.name}</div><div class="formula-expr">${f.expr}</div></div>`).join('')}
+      </div>
+    ` : '';
+    const qaHtml = w.qa.map(q => `
+      <div class="qa-item">
+        <div class="qa-q" onclick="toggleQA(this)">
+          <span class="qa-q-icon">Q</span>
+          <span>${q.q}</span>
+        </div>
+        <div class="qa-a">${q.a}</div>
+      </div>
+    `).join('');
+    const tipsHtml = w.tips.map(t=>`<li>${t}</li>`).join('');
+
+    return `
+    <div class="week-card ${done?'':''}${i===0?' open':''}" id="week-card-${i}">
+      <div class="week-header" onclick="toggleWeek(${i})">
+        <span class="week-num">${w.num}</span>
+        <div>
+          <div class="week-title">${w.title}</div>
+          <div class="week-subtitle">${w.subtitle}</div>
+        </div>
+        <span class="week-chevron">▾</span>
+      </div>
+      <div class="week-body">
+        <div class="topic-tags">${tagsHtml}</div>
+
+        <div class="section-hdr">Core Concepts</div>
+        <div class="concepts">${conceptsHtml}</div>
+
+        <div class="section-hdr">Memory Aid</div>
+        <div class="mnemonic-box">
+          <div class="mnemonic-title">✦ MNEMONIC / ANALOGY</div>
+          <div class="mnemonic-text">${w.mnemonic}</div>
+        </div>
+
+        ${formulasHtml}
+
+        <div class="section-hdr">Practice Q&amp;A (Click to reveal answers)</div>
+        <div class="qa-list">${qaHtml}</div>
+
+        <div class="section-hdr">Exam Tips</div>
+        <ul class="tips-list">${tipsHtml}</ul>
+
+        <button class="mark-done-btn ${done?'done':''}" onclick="markDone(${i}, this)">
+          ${done ? '✓ Marked Done!' : 'Mark as Done'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderWeeks();
+renderNav();
+updateProgress();
+</script>
+</body>
+</html>
